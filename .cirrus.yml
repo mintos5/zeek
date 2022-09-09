@@ -120,7 +120,7 @@ env:
 
   # This is the https endpoint host and port used for benchmarking. It's kept
   # encrypted as a security measure to avoid leaking the host's information.
-  ZEEK_BENCHMARK_HOST: ENCRYPTED[62ecdc93e839800d754d09d9a9070e9cb9b209e7d7dd2472ba38648f786ff272d0e0ea71233d0910025f2c6f3771259c]
+  ZEEK_BENCHMARK_HOST: ENCRYPTED[380bf93de174db123387289dc6cb443ec341aab30befe43fe2f43634f86995b29a4571674092cdafb39308eaee65050d]
   ZEEK_BENCHMARK_PORT: ENCRYPTED[b97fabf4d6bd5eef107c8469c5cb2c44e0107d89c220f43e7d1e7bdfb32dbdc2620855fee8e5a8d889458d5a6ac3e5c7]
 
   # The repo token used for uploading data to Coveralls.io
@@ -133,85 +133,85 @@ env:
 # Linux EOL timelines: https://linuxlifecycle.com/
 # Fedora (~13 months): https://fedoraproject.org/wiki/Fedora_Release_Life_Cycle
 
-fedora35_task:
-  container:
-    # Fedora 35 EOL: Around Dec 2022
-    dockerfile: ci/fedora-35/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# fedora35_task:
+#   container:
+#     # Fedora 35 EOL: Around Dec 2022
+#     dockerfile: ci/fedora-35/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-fedora36_task:
-  container:
-    # Fedora 36 EOL: Around May 2023
-    dockerfile: ci/fedora-36/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# fedora36_task:
+#   container:
+#     # Fedora 36 EOL: Around May 2023
+#     dockerfile: ci/fedora-36/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-centosstream9_task:
-  container:
-    # Stream 9 EOL: Around Dec 2027
-    dockerfile: ci/centos-stream-9/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# centosstream9_task:
+#   container:
+#     # Stream 9 EOL: Around Dec 2027
+#     dockerfile: ci/centos-stream-9/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-centosstream8_task:
-  container:
-    # Stream 8 EOL: May 31, 2024
-    dockerfile: ci/centos-stream-8/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# centosstream8_task:
+#   container:
+#     # Stream 8 EOL: May 31, 2024
+#     dockerfile: ci/centos-stream-8/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-centos7_task:
-  container:
-    # CentOS 7 EOL: June 30, 2024
-    dockerfile: ci/centos-7/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# centos7_task:
+#   container:
+#     # CentOS 7 EOL: June 30, 2024
+#     dockerfile: ci/centos-7/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-debian11_task:
-  container:
-    # Debian 11 EOL: June 2026
-    dockerfile: ci/debian-11/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# debian11_task:
+#   container:
+#     # Debian 11 EOL: June 2026
+#     dockerfile: ci/debian-11/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-debian11_static_task:
-  container:
-    # Just use a recent/common distro to run a static compile test.
-    # Debian 11 EOL: June 2026
-    dockerfile: ci/debian-11/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
-  env:
-    ZEEK_CI_CONFIGURE_FLAGS: *STATIC_CONFIG
+# debian11_static_task:
+#   container:
+#     # Just use a recent/common distro to run a static compile test.
+#     # Debian 11 EOL: June 2026
+#     dockerfile: ci/debian-11/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
+#   env:
+#     ZEEK_CI_CONFIGURE_FLAGS: *STATIC_CONFIG
 
-debian10_task:
-  container:
-    # Debian 10 EOL: June 2024
-    dockerfile: ci/debian-10/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# debian10_task:
+#   container:
+#     # Debian 10 EOL: June 2024
+#     dockerfile: ci/debian-10/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-opensuse_leap_15_4_task:
-  container:
-    # Opensuse Leap 15.4 EOL: TBD
-    dockerfile: ci/opensuse-leap-15.4/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# opensuse_leap_15_4_task:
+#   container:
+#     # Opensuse Leap 15.4 EOL: TBD
+#     dockerfile: ci/opensuse-leap-15.4/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-opensuse_leap_15_3_task:
-  container:
-    # Opensuse Leap 15.3 EOL: ~Dec 2022
-    dockerfile: ci/opensuse-leap-15.3/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# opensuse_leap_15_3_task:
+#   container:
+#     # Opensuse Leap 15.3 EOL: ~Dec 2022
+#     dockerfile: ci/opensuse-leap-15.3/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-opensuse_tumbleweed_task:
-  container:
-    # Opensuse Tumbleweed has no EOL
-    dockerfile: ci/opensuse-tumbleweed/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
+# opensuse_tumbleweed_task:
+#   container:
+#     # Opensuse Tumbleweed has no EOL
+#     dockerfile: ci/opensuse-tumbleweed/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
 ubuntu22_task:
   container:
@@ -219,129 +219,134 @@ ubuntu22_task:
     dockerfile: ci/ubuntu-22.04/Dockerfile
     << : *RESOURCES_TEMPLATE
   << : *CI_TEMPLATE
-
-ubuntu20_task:
-  container:
-    # Ubuntu 20.04 EOL: April 2025
-    dockerfile: ci/ubuntu-20.04/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
-
-ubuntu18_task:
-  container:
-    # Ubuntu 18.04 EOL: April 2023
-    dockerfile: ci/ubuntu-18.04/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
-
-alpine_task:
-  container:
-    # Alpine releases typically happen every 6 months w/ support for 2 years.
-    # The Dockerfile simply tracks latest Alpine release and shouldn't
-    # generally need updating based on particular Alpine release timelines.
-    dockerfile: ci/alpine/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
-
-# Apple doesn't publish official long-term support timelines.
-# We aim to support both the current and previous macOS release.
-macos_monterey_task:
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-monterey-base:latest
-  prepare_script: ./ci/macos/prepare.sh
-  << : *CI_TEMPLATE
-  << : *MACOS_ENVIRONMENT
-
-macos_big_sur_task:
-  macos_instance:
-    image: big-sur-xcode-12.5
-  prepare_script: ./ci/macos/prepare.sh
-  << : *CI_TEMPLATE
-  << : *MACOS_ENVIRONMENT
-
-# FreeBSD EOL timelines: https://www.freebsd.org/security/#sup
-freebsd14_task:
-  freebsd_instance:
-    # We don't support FreeBSD 14 yet, this is a purely informative task
-    image_family: freebsd-14-0-snap
-    allow_failures: true
-    skip_notification: true
-    << : *FREEBSD_RESOURCES_TEMPLATE
-
-  prepare_script: ./ci/freebsd/prepare.sh
-  << : *CI_TEMPLATE
-  << : *FREEBSD_ENVIRONMENT
-
-freebsd13_task:
-  freebsd_instance:
-    # FreeBSD 13 EOL: January 31, 2026
-    image_family: freebsd-13-1
-    << : *FREEBSD_RESOURCES_TEMPLATE
-
-  prepare_script: ./ci/freebsd/prepare.sh
-  << : *CI_TEMPLATE
-  << : *FREEBSD_ENVIRONMENT
-
-freebsd12_task:
-  freebsd_instance:
-    # FreeBSD 12 EOL: June 30, 2024
-    image_family: freebsd-12-3
-    << : *FREEBSD_RESOURCES_TEMPLATE
-
-  prepare_script: ./ci/freebsd/prepare.sh
-  << : *CI_TEMPLATE
-  << : *FREEBSD_ENVIRONMENT
-
-# This can be removed as soon as the first distribution that we use ships
-# OpenSSL 3.0
-openssl30_task:
-  container:
-    # Tweaked Ubuntu 20.04 EOL: April 2025
-    dockerfile: ci/openssl-3.0/Dockerfile
-    << : *RESOURCES_TEMPLATE
-  << : *CI_TEMPLATE
   env:
-    ZEEK_CI_CONFIGURE_FLAGS: *OPENSSL30_CONFIG
+    ZEEK_CI_CREATE_ARTIFACT: 1
+  upload_binary_artifacts:
+    path: build.tgz
+  benchmark_script: ./ci/benchmark.sh
 
-asan_sanitizer_task:
-  container:
-    # Just uses a recent/common distro to run memory error/leak checks.
-    dockerfile: ci/ubuntu-20.04/Dockerfile
-    << : *SANITIZERS_RESOURCE_TEMPLATE
+# ubuntu20_task:
+#   container:
+#     # Ubuntu 20.04 EOL: April 2025
+#     dockerfile: ci/ubuntu-20.04/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-  << : *CI_TEMPLATE
-  test_fuzzers_script: ./ci/test-fuzzers.sh
-  coverage_script: ./ci/upload-coverage.sh
-  env:
-    CXXFLAGS: -DZEEK_DICT_DEBUG
-    ZEEK_CI_CONFIGURE_FLAGS: *ASAN_SANITIZER_CONFIG
-    ZEEK_CI_DISABLE_SCRIPT_PROFILING: 1
-    ASAN_OPTIONS: detect_leaks=1
+# ubuntu18_task:
+#   container:
+#     # Ubuntu 18.04 EOL: April 2023
+#     dockerfile: ci/ubuntu-18.04/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-ubsan_sanitizer_task:
-  container:
-    # Just uses a recent/common distro to run undefined behavior checks.
-    dockerfile: ci/ubuntu-20.04/Dockerfile
-    << : *SANITIZERS_RESOURCE_TEMPLATE
+# alpine_task:
+#   container:
+#     # Alpine releases typically happen every 6 months w/ support for 2 years.
+#     # The Dockerfile simply tracks latest Alpine release and shouldn't
+#     # generally need updating based on particular Alpine release timelines.
+#     dockerfile: ci/alpine/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
 
-  << : *CI_TEMPLATE
-  test_fuzzers_script: ./ci/test-fuzzers.sh
-  env:
-    CXXFLAGS: -DZEEK_DICT_DEBUG
-    ZEEK_CI_CONFIGURE_FLAGS: *UBSAN_SANITIZER_CONFIG
-    ZEEK_CI_DISABLE_SCRIPT_PROFILING: 1
-    ZEEK_TAILORED_UB_CHECKS: 1
-    UBSAN_OPTIONS: print_stacktrace=1
+# # Apple doesn't publish official long-term support timelines.
+# # We aim to support both the current and previous macOS release.
+# macos_monterey_task:
+#   macos_instance:
+#     image: ghcr.io/cirruslabs/macos-monterey-base:latest
+#   prepare_script: ./ci/macos/prepare.sh
+#   << : *CI_TEMPLATE
+#   << : *MACOS_ENVIRONMENT
 
-# tsan_sanitizer_task:
+# macos_big_sur_task:
+#   macos_instance:
+#     image: big-sur-xcode-12.5
+#   prepare_script: ./ci/macos/prepare.sh
+#   << : *CI_TEMPLATE
+#   << : *MACOS_ENVIRONMENT
+
+# # FreeBSD EOL timelines: https://www.freebsd.org/security/#sup
+# freebsd14_task:
+#   freebsd_instance:
+#     # We don't support FreeBSD 14 yet, this is a purely informative task
+#     image_family: freebsd-14-0-snap
+#     allow_failures: true
+#     skip_notification: true
+#     << : *FREEBSD_RESOURCES_TEMPLATE
+
+#   prepare_script: ./ci/freebsd/prepare.sh
+#   << : *CI_TEMPLATE
+#   << : *FREEBSD_ENVIRONMENT
+
+# freebsd13_task:
+#   freebsd_instance:
+#     # FreeBSD 13 EOL: January 31, 2026
+#     image_family: freebsd-13-1
+#     << : *FREEBSD_RESOURCES_TEMPLATE
+
+#   prepare_script: ./ci/freebsd/prepare.sh
+#   << : *CI_TEMPLATE
+#   << : *FREEBSD_ENVIRONMENT
+
+# freebsd12_task:
+#   freebsd_instance:
+#     # FreeBSD 12 EOL: June 30, 2024
+#     image_family: freebsd-12-3
+#     << : *FREEBSD_RESOURCES_TEMPLATE
+
+#   prepare_script: ./ci/freebsd/prepare.sh
+#   << : *CI_TEMPLATE
+#   << : *FREEBSD_ENVIRONMENT
+
+# # This can be removed as soon as the first distribution that we use ships
+# # OpenSSL 3.0
+# openssl30_task:
+#   container:
+#     # Tweaked Ubuntu 20.04 EOL: April 2025
+#     dockerfile: ci/openssl-3.0/Dockerfile
+#     << : *RESOURCES_TEMPLATE
+#   << : *CI_TEMPLATE
+#   env:
+#     ZEEK_CI_CONFIGURE_FLAGS: *OPENSSL30_CONFIG
+
+# asan_sanitizer_task:
 #   container:
 #     # Just uses a recent/common distro to run memory error/leak checks.
 #     dockerfile: ci/ubuntu-20.04/Dockerfile
 #     << : *SANITIZERS_RESOURCE_TEMPLATE
-#
+
+#   << : *CI_TEMPLATE
+#   test_fuzzers_script: ./ci/test-fuzzers.sh
+#   coverage_script: ./ci/upload-coverage.sh
+#   env:
+#     CXXFLAGS: -DZEEK_DICT_DEBUG
+#     ZEEK_CI_CONFIGURE_FLAGS: *ASAN_SANITIZER_CONFIG
+#     ZEEK_CI_DISABLE_SCRIPT_PROFILING: 1
+#     ASAN_OPTIONS: detect_leaks=1
+
+# ubsan_sanitizer_task:
+#   container:
+#     # Just uses a recent/common distro to run undefined behavior checks.
+#     dockerfile: ci/ubuntu-20.04/Dockerfile
+#     << : *SANITIZERS_RESOURCE_TEMPLATE
+
 #   << : *CI_TEMPLATE
 #   test_fuzzers_script: ./ci/test-fuzzers.sh
 #   env:
 #     CXXFLAGS: -DZEEK_DICT_DEBUG
-#     ZEEK_CI_CONFIGURE_FLAGS: *TSAN_SANITIZER_CONFIG
+#     ZEEK_CI_CONFIGURE_FLAGS: *UBSAN_SANITIZER_CONFIG
 #     ZEEK_CI_DISABLE_SCRIPT_PROFILING: 1
+#     ZEEK_TAILORED_UB_CHECKS: 1
+#     UBSAN_OPTIONS: print_stacktrace=1
+
+# # tsan_sanitizer_task:
+# #   container:
+# #     # Just uses a recent/common distro to run memory error/leak checks.
+# #     dockerfile: ci/ubuntu-20.04/Dockerfile
+# #     << : *SANITIZERS_RESOURCE_TEMPLATE
+# #
+# #   << : *CI_TEMPLATE
+# #   test_fuzzers_script: ./ci/test-fuzzers.sh
+# #   env:
+# #     CXXFLAGS: -DZEEK_DICT_DEBUG
+# #     ZEEK_CI_CONFIGURE_FLAGS: *TSAN_SANITIZER_CONFIG
+# #     ZEEK_CI_DISABLE_SCRIPT_PROFILING: 1
