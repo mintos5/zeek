@@ -295,6 +295,7 @@ set(MAIN_SRCS
     Event.cc
     EventHandler.cc
     EventLauncher.cc
+    EventGroupRegistry.cc
     EventRegistry.cc
     EventTrace.cc
     Expr.cc

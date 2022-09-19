@@ -383,6 +383,9 @@ ValPtr ScriptFunc::Invoke(zeek::Args* args, Frame* parent) const
 
 	for ( const auto& body : bodies )
 		{
+		if ( body.stmts->IsDisabled() )
+			continue;
+
 		if ( sample_logger )
 			sample_logger->LocationSeen(body.stmts->GetLocationInfo());
 
@@ -788,7 +791,7 @@ static int get_func_priority(const std::vector<AttrPtr>& attrs)
 
 	for ( const auto& a : attrs )
 		{
-		if ( a->Tag() == ATTR_DEPRECATED || a->Tag() == ATTR_IS_USED )
+		if ( a->Tag() == ATTR_DEPRECATED || a->Tag() == ATTR_IS_USED || a->Tag() == ATTR_GROUP )
 			continue;
 
 		if ( a->Tag() != ATTR_PRIORITY )

@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "zeek/EventGroupRegistry.h"
 #include "zeek/EventRegistry.h"
 #include "zeek/Expr.h"
 #include "zeek/Func.h"
@@ -842,6 +843,11 @@ void end_func(StmtPtr body, bool free_of_conditionals)
 	oi->num_stmts = Stmt::GetNumStmts();
 	oi->num_exprs = Expr::GetNumExprs();
 
+	// Get a pointer to the group_attr before popping the scope.
+	// We could make group extraction part of function ingredients,
+	// but I'm not yet sure that's where it belongs.
+	Attr* group_attr = find_attr(current_scope()->Attrs().get(), ATTR_GROUP);
+
 	auto ingredients = std::make_unique<function_ingredients>(pop_scope(), std::move(body));
 
 	if ( ingredients->id->HasVal() )
@@ -854,6 +860,17 @@ void end_func(StmtPtr body, bool free_of_conditionals)
 
 		ingredients->id->SetVal(make_intrusive<FuncVal>(std::move(f)));
 		ingredients->id->SetConst();
+		}
+
+	// If we had one or more group names, attach them to the body.
+	if ( group_attr )
+		{
+		// XXX: Copied from the DeprecationMessage. I'm sure it's unsafe
+		auto ce = static_cast<ConstExpr*>(group_attr->GetExpr().get());
+		std::string group_name = ce->Value()->AsStringVal()->CheckString();
+		// std::fprintf(stderr, "Attaching group %s\n", group_name.c_str());
+		auto& group = zeek::detail::event_group_registry->Register(group_name);
+		group.AddBody(ingredients->body);
 		}
 
 	auto func_ptr = cast_intrusive<FuncVal>(ingredients->id->GetVal())->AsFuncPtr();
