@@ -114,6 +114,7 @@ ID::ID(const char* arg_name, IDScope arg_scope, bool arg_is_export)
 	scope = arg_scope;
 	is_export = arg_is_export;
 	is_option = false;
+	is_blank = name && util::streq(name, "_");
 	is_const = false;
 	is_enum_const = false;
 	is_type = false;

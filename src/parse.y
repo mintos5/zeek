@@ -1870,13 +1870,21 @@ stmt:
 			set_location(@1, @7);
 			if ( ! locals_at_this_scope.empty() )
 			       locals_at_this_scope.back().insert($2);
-			$$ = build_local($2, $3, $4, $5, $6, VAR_REGULAR, ! $8).release();
+
+			if ( $2->IsBlank() )
+				$2->Error("blank identifier used as local");
+			else
+				$$ = build_local($2, $3, $4, $5, $6, VAR_REGULAR, ! $8).release();
 			}
 
 	|	TOK_CONST local_id opt_type init_class opt_init opt_attr ';' opt_no_test
 			{
 			set_location(@1, @6);
-			$$ = build_local($2, $3, $4, $5, $6, VAR_CONST, ! $8).release();
+
+			if ( $2->IsBlank() )
+				$2->Error("blank identifier used as local");
+			else
+				$$ = build_local($2, $3, $4, $5, $6, VAR_CONST, ! $8).release();
 			}
 
 	|	when_clause

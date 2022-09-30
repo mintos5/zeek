@@ -1233,7 +1233,11 @@ ForStmt::ForStmt(IDPList* arg_loop_vars, ExprPtr loop_expr)
 			const auto& lv = (*loop_vars)[i];
 			const auto& lvt = lv->GetType();
 
-			if ( lvt )
+			if ( lv->IsBlank() )
+				{
+				lv->SetType(base_type(TYPE_VOID));
+				}
+			else if ( lvt )
 				{
 				if ( ! same_type(lvt, ind_type) )
 					lvt->Error("type clash in iteration", ind_type.get());
@@ -1254,11 +1258,16 @@ ForStmt::ForStmt(IDPList* arg_loop_vars, ExprPtr loop_expr)
 			return;
 			}
 
-		const auto& t = (*loop_vars)[0]->GetType();
+		const auto& lv = (*loop_vars)[0];
+		const auto& t = lv->GetType();
 
-		if ( ! t )
-			add_local({NewRef{}, (*loop_vars)[0]}, base_type(TYPE_COUNT), INIT_NONE, nullptr,
-			          nullptr, VAR_REGULAR);
+		if ( lv->IsBlank() )
+			{
+			lv->SetType(base_type(TYPE_VOID));
+			}
+		else if ( ! t )
+			add_local({NewRef{}, lv}, base_type(TYPE_COUNT), INIT_NONE, nullptr, nullptr,
+			          VAR_REGULAR);
 
 		else if ( ! IsIntegral(t->Tag()) )
 			{
@@ -1275,9 +1284,14 @@ ForStmt::ForStmt(IDPList* arg_loop_vars, ExprPtr loop_expr)
 			return;
 			}
 
-		const auto& t = (*loop_vars)[0]->GetType();
+		const auto& lv = (*loop_vars)[0];
+		const auto& t = lv->GetType();
 
-		if ( ! t )
+		if ( lv->IsBlank() )
+			{
+			lv->Error("can not use blank identifier iterating over string");
+			}
+		else if ( ! t )
 			add_local({NewRef{}, (*loop_vars)[0]}, base_type(TYPE_STRING), INIT_NONE, nullptr,
 			          nullptr, VAR_REGULAR);
 
@@ -1350,7 +1364,11 @@ ValPtr ForStmt::DoExec(Frame* f, Val* v, StmtFlowType& flow)
 				f->SetElement(value_var, current_tev->GetVal());
 
 			for ( int i = 0; i < ind_lv->Length(); i++ )
-				f->SetElement((*loop_vars)[i], ind_lv->Idx(i));
+				{
+				const auto* lv = (*loop_vars)[i];
+				if ( ! lv->IsBlank() )
+					f->SetElement(lv, ind_lv->Idx(i));
+				}
 
 			flow = FLOW_NEXT;
 			ret = body->Exec(f, flow);
@@ -1375,7 +1393,10 @@ ValPtr ForStmt::DoExec(Frame* f, Val* v, StmtFlowType& flow)
 			if ( value_var )
 				f->SetElement(value_var, vv->ValAt(i));
 
-			f->SetElement((*loop_vars)[0], val_mgr->Count(i));
+			const auto* lv = (*loop_vars)[0];
+			if ( ! lv->IsBlank() )
+				f->SetElement(lv, val_mgr->Count(i));
+
 			flow = FLOW_NEXT;
 			ret = body->Exec(f, flow);
 
