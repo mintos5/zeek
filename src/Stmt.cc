@@ -1354,20 +1354,29 @@ ValPtr ForStmt::DoExec(Frame* f, Val* v, StmtFlowType& flow)
 		if ( ! loop_vals->Length() )
 			return nullptr;
 
+		// If there are only blank loop_vars (iterating over just the values),
+		// we can avoid the RecreateIndex() overhead.
+		bool all_loop_vars_blank = true;
+		for ( const auto* lv : *loop_vars )
+			all_loop_vars_blank &= lv->IsBlank();
+
 		for ( const auto& lve : *loop_vals )
 			{
 			auto k = lve.GetHashKey();
 			auto* current_tev = lve.value;
-			auto ind_lv = tv->RecreateIndex(*k);
 
 			if ( value_var )
 				f->SetElement(value_var, current_tev->GetVal());
 
-			for ( int i = 0; i < ind_lv->Length(); i++ )
+			if ( ! all_loop_vars_blank )
 				{
-				const auto* lv = (*loop_vars)[i];
-				if ( ! lv->IsBlank() )
-					f->SetElement(lv, ind_lv->Idx(i));
+				auto ind_lv = tv->RecreateIndex(*k);
+				for ( int i = 0; i < ind_lv->Length(); i++ )
+					{
+					const auto* lv = (*loop_vars)[i];
+					if ( ! lv->IsBlank() )
+						f->SetElement(lv, ind_lv->Idx(i));
+					}
 				}
 
 			flow = FLOW_NEXT;
