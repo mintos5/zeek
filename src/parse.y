@@ -926,7 +926,12 @@ expr:
 					id->SetType(error_type());
 					$$ = new NameExpr(std::move(id));
 					}
-
+				else if ( id->IsBlank() )
+					{
+					id->Error("blank identifier used in expression");
+					id->SetType(error_type());
+					$$ = new NameExpr(std::move(id));
+					}
 				else if ( id->IsEnumConst() )
 					{
 					if ( IsErrorType(id->GetType()->Tag()) )
