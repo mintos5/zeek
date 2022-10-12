@@ -14,3 +14,6 @@ canaries, a canary, b canary
 3, c3c
 2, b2b
 canaries, a canary, b canary
+== s
+strlen(s), 10
+canaries, a canary, b canary

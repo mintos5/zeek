@@ -1289,7 +1289,7 @@ ForStmt::ForStmt(IDPList* arg_loop_vars, ExprPtr loop_expr)
 
 		if ( lv->IsBlank() )
 			{
-			lv->Error("can not use blank identifier iterating over string");
+			lv->SetType(base_type(TYPE_VOID));
 			}
 		else if ( ! t )
 			add_local({NewRef{}, (*loop_vars)[0]}, base_type(TYPE_STRING), INIT_NONE, nullptr,
