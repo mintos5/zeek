@@ -43,9 +43,14 @@ using ScopePtr = IntrusivePtr<Scope>;
 using IDPtr = IntrusivePtr<ID>;
 using StmtPtr = IntrusivePtr<Stmt>;
 
+struct function_ingredients;
+
 class ScriptFunc;
 
 	} // namespace detail
+
+class EventGroup;
+using EventGroupPtr = std::shared_ptr<EventGroup>;
 
 class Func;
 using FuncPtr = IntrusivePtr<Func>;
@@ -69,11 +74,16 @@ public:
 	struct Body
 		{
 		detail::StmtPtr stmts;
-		int priority;
+		int priority = 0;
+		int disabled_groups = 0;
+		std::set<EventGroupPtr> groups;
+
 		bool operator<(const Body& other) const
 			{
 			return priority > other.priority;
 			} // reverse sort
+
+		bool IsDisabled() const { return disabled_groups > 0; }
 		};
 
 	const std::vector<Body>& GetBodies() const { return bodies; }
@@ -100,8 +110,15 @@ public:
 		}
 
 	// Add a new event handler to an existing function (event).
-	virtual void AddBody(detail::StmtPtr new_body, const std::vector<detail::IDPtr>& new_inits,
-	                     size_t new_frame_size, int priority = 0);
+	[[deprecated("Remove in v6.1 - Use function_ingredients version")]] virtual void
+	AddBody(detail::StmtPtr new_body, const std::vector<detail::IDPtr>& new_inits,
+	        size_t new_frame_size, int priority = 0);
+
+	// Add a new event handler to an existing function (event).
+	virtual void AddBody(const zeek::detail::function_ingredients* ingredients);
+
+	// Update body disabled_count according to groups.
+	void UpdateBodies();
 
 	virtual void SetScope(detail::ScopePtr newscope);
 	virtual detail::ScopePtr GetScope() const { return scope; }
@@ -142,12 +159,15 @@ namespace detail
 class ScriptFunc : public Func
 	{
 public:
-	ScriptFunc(const IDPtr& id, StmtPtr body, const std::vector<IDPtr>& inits, size_t frame_size,
-	           int priority);
+	ScriptFunc(const IDPtr& id);
+
+	[[deprecated("Remove in v6.1 - use two-step construction with AddBody()")]] ScriptFunc(
+		const IDPtr& id, StmtPtr body, const std::vector<IDPtr>& inits, size_t frame_size,
+		int priority);
 
 	// For compiled scripts.
-	ScriptFunc(std::string name, FuncTypePtr ft, std::vector<StmtPtr> bodies,
-	           std::vector<int> priorities);
+	[[deprecated("Remove in v6.1 - use two-step construction with AddBody()")]] ScriptFunc(
+		std::string name, FuncTypePtr ft, std::vector<StmtPtr> bodies, std::vector<int> priorities);
 
 	~ScriptFunc() override;
 
@@ -196,8 +216,11 @@ public:
 	 */
 	bool DeserializeCaptures(const broker::vector& data);
 
-	void AddBody(StmtPtr new_body, const std::vector<IDPtr>& new_inits, size_t new_frame_size,
-	             int priority) override;
+	[[deprecated("Remove in v6.1 - Use function_ingredients version")]] void
+	AddBody(StmtPtr new_body, const std::vector<IDPtr>& new_inits, size_t new_frame_size,
+	        int priority) override;
+
+	void AddBody(const zeek::detail::function_ingredients* ingredients) override;
 
 	/**
 	 * Replaces the given current instance of a function body with
@@ -318,6 +341,7 @@ struct function_ingredients
 	int frame_size = 0;
 	int priority = 0;
 	ScopePtr scope;
+	std::set<EventGroupPtr> groups;
 	};
 
 extern std::vector<CallInfo> call_stack;

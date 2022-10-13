@@ -5582,7 +5582,7 @@ function is_packet_analyzer%(atype: AllAnalyzers::Tag%) : bool
 ## TODO: Fix comment, this doesn't automatically enable event handlers. All involved groups need to be enabled.
 ##
 ## Enables all event handlers in a given group. One can tag event handlers with
-## the :bro:attr:`&group` attribute to logically group them together, e.g,
+## the :zeek:attr:`&group` attribute to logically group them together, e.g,
 ## ``event foo() &group="bar"``. This function enables all event handlers that
 ## belong to such a group.
 ##
@@ -5591,7 +5591,7 @@ function is_packet_analyzer%(atype: AllAnalyzers::Tag%) : bool
 ## .. zeek:see:: disable_event_group
 function enable_event_group%(group: string%) : any
 	%{
-	auto* g = event_registry->LookupGroup(group->CheckString());
+	auto g = event_registry->LookupGroup(group->CheckString());
 	if ( ! g )
 		{
 		zeek::emit_builtin_error(zeek::util::fmt("no such group: %s", group->CheckString()));
@@ -5612,7 +5612,7 @@ function enable_event_group%(group: string%) : any
 ## .. zeek:see:: enable_event_group
 function disable_event_group%(group: string%) : bool
 	%{
-	auto* g = event_registry->LookupGroup(group->CheckString());
+	auto g = event_registry->LookupGroup(group->CheckString());
 	if ( ! g )
 		{
 		zeek::emit_builtin_error(zeek::util::fmt("no such group: %s", group->CheckString()));

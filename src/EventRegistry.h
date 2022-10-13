@@ -11,8 +11,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "zeek/IntrusivePtr.h"
-
 namespace zeek
 	{
 
@@ -21,12 +19,7 @@ class EventHandler;
 class EventHandlerPtr;
 class RE_Matcher;
 
-namespace detail
-	{
-class Stmt;
-using StmtPtr = zeek::IntrusivePtr<Stmt>;
-using BodyPtr = StmtPtr;
-	}
+using EventGroupPtr = std::shared_ptr<EventGroup>;
 
 // The registry keeps track of all events that we provide or handle.
 class EventRegistry
@@ -86,14 +79,14 @@ public:
 	 *
 	 * @return The event group.
 	 */
-	EventGroup& RegisterGroup(std::string_view name);
+	EventGroupPtr RegisterGroup(std::string_view name);
 
 	/**
 	 * Lookup an event group.
 	 *
 	 * @return Pointer to the group or nullptr if the group does not exist.
 	 */
-	EventGroup* LookupGroup(std::string_view name);
+	EventGroupPtr LookupGroup(std::string_view name);
 
 private:
 	std::map<std::string, std::unique_ptr<EventHandler>, std::less<>> handlers;
@@ -102,7 +95,7 @@ private:
 	std::unordered_set<std::string> not_only_from_script;
 
 	// Maps event group names to their instances.
-	std::map<std::string, EventGroup, std::less<>> event_groups;
+	std::map<std::string, std::shared_ptr<EventGroup>, std::less<>> event_groups;
 	};
 
 class EventGroup
@@ -128,15 +121,13 @@ public:
 	void Disable();
 
 	/**
-	 * Associate a function body with this group.
+	 * @return True if this group is disabled
 	 */
-	void AddBody(zeek::detail::BodyPtr b);
+	bool IsDisabled() { return ! enabled; }
 
 private:
 	std::string name;
 	bool enabled = true;
-
-	std::vector<zeek::detail::BodyPtr> bodies;
 	};
 
 extern EventRegistry* event_registry;

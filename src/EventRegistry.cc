@@ -147,49 +147,86 @@ void EventRegistry::ActivateAllHandlers()
 		}
 	}
 
-EventGroup& EventRegistry::RegisterGroup(std::string_view name)
+EventGroupPtr EventRegistry::RegisterGroup(std::string_view name)
 	{
 	if ( const auto& it = event_groups.find(name); it != event_groups.end() )
 		return it->second;
 
-	return event_groups.emplace(name, name).first->second;
+	auto group = std::make_shared<EventGroup>(name);
+	return event_groups.emplace(name, group).first->second;
 	}
-EventGroup* EventRegistry::LookupGroup(std::string_view name)
+EventGroupPtr EventRegistry::LookupGroup(std::string_view name)
 	{
 	if ( const auto& it = event_groups.find(name); it != event_groups.end() )
-		return &(it->second);
+		return it->second;
 
 	return nullptr;
 	}
 
 EventGroup::EventGroup(std::string_view name) : name(name) { }
+
 EventGroup::~EventGroup() noexcept { }
+
+namespace
+	{
+// This is somewhat annoying: The Func class has a vector of Func::Body
+// instances that know which groups they are part of. However, we can't
+// just hold on to the Body pointers as those may be reallocated or sorted
+// around.
+//
+// Use this helper to collect Func objects for the given group instead.
+//
+// We could probably avoid a bit of this mess if we keep track which Funcs
+// are part of a group (even if not all bodies are)
+//
+// std::shared_ptr comparisons probably don't make much sense, too.
+std::vector<zeek::FuncPtr> GetFuncs(const EventGroup* const group)
+	{
+	std::vector<zeek::FuncPtr> funcs;
+
+	for ( const auto& handler_name : event_registry->AllHandlers() )
+		{
+		EventHandler* eh = event_registry->Lookup(handler_name);
+		const auto& func = eh->GetFunc();
+		const auto& bodies = func->GetBodies();
+
+		bool group_match = false;
+		for ( auto& b : bodies )
+			{
+			if ( group_match ) // Next func
+				break;
+
+			for ( auto& g : b.groups )
+				if ( g.get() == group )
+					{
+					group_match = true;
+					funcs.push_back(func);
+					break;
+					}
+			}
+		}
+	return funcs;
+	}
+	}
+
 void EventGroup::Enable()
 	{
 	if ( enabled )
 		return;
 
-	// Go through all bodies Decrement their disabled count
-	for ( const auto& b : bodies )
-		b->DecrementDisabled();
-
 	enabled = true;
+	for ( auto f : GetFuncs(this) )
+		f->UpdateBodies();
 	}
+
 void EventGroup::Disable()
 	{
-
 	if ( ! enabled )
 		return;
 
-	// Go through all bodies Increment their disabled count
-	for ( const auto& b : bodies )
-		b->IncrementDisabled();
-
 	enabled = false;
-	}
-void EventGroup::AddBody(zeek::detail::BodyPtr b)
-	{
-	bodies.push_back(b);
+	for ( auto f : GetFuncs(this) )
+		f->UpdateBodies();
 	}
 
 	} // namespace zeek

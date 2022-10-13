@@ -179,12 +179,6 @@ public:
 	// this statement.
 	StmtOptInfo* GetOptInfo() const { return opt_info; }
 
-	// Ad-hoc support for groups.
-	// TODO: Move this into Func::Body rather than Stmt?
-	void DecrementDisabled() { disabled_count--; }
-	void IncrementDisabled() { disabled_count++; }
-	bool IsDisabled() const { return disabled_count > 0; }
-
 	// Returns the number of statements created since the last reset.
 	static int GetNumStmts() { return num_stmts; }
 
@@ -217,8 +211,6 @@ protected:
 	// Information associated with the Stmt for purposes of
 	// script optimization.
 	StmtOptInfo* opt_info;
-
-	int disabled_count = 0;
 
 	// Number of statements created thus far.
 	static int num_stmts;
