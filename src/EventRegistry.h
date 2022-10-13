@@ -11,12 +11,22 @@
 #include <unordered_set>
 #include <vector>
 
+#include "zeek/IntrusivePtr.h"
+
 namespace zeek
 	{
 
+class EventGroup;
 class EventHandler;
 class EventHandlerPtr;
 class RE_Matcher;
+
+namespace detail
+	{
+class Stmt;
+using StmtPtr = zeek::IntrusivePtr<Stmt>;
+using BodyPtr = StmtPtr;
+	}
 
 // The registry keeps track of all events that we provide or handle.
 class EventRegistry
@@ -71,11 +81,62 @@ public:
 	 */
 	void ActivateAllHandlers();
 
+	/**
+	 * Lookup or register a new event group and return a reference to it.
+	 *
+	 * @return The event group.
+	 */
+	EventGroup& RegisterGroup(std::string_view name);
+
+	/**
+	 * Lookup an event group.
+	 *
+	 * @return Pointer to the group or nullptr if the group does not exist.
+	 */
+	EventGroup* LookupGroup(std::string_view name);
+
 private:
 	std::map<std::string, std::unique_ptr<EventHandler>, std::less<>> handlers;
 	// Tracks whether a given event handler was registered in a
 	// non-script context.
 	std::unordered_set<std::string> not_only_from_script;
+
+	// Maps event group names to their instances.
+	std::map<std::string, EventGroup, std::less<>> event_groups;
+	};
+
+class EventGroup
+	{
+public:
+	EventGroup(std::string_view name);
+	~EventGroup() noexcept;
+
+	/**
+	 * Enable this event group.
+	 *
+	 * Function bodies are enabled if all the groups they are part of
+	 * have been enabled.
+	 */
+	void Enable();
+
+	/**
+	 * Disable this event group.
+	 *
+	 * Function bodies are enabled if any of the groups they are part of
+	 * have been disabled.
+	 */
+	void Disable();
+
+	/**
+	 * Associate a function body with this group.
+	 */
+	void AddBody(zeek::detail::BodyPtr b);
+
+private:
+	std::string name;
+	bool enabled = true;
+
+	std::vector<zeek::detail::BodyPtr> bodies;
 	};
 
 extern EventRegistry* event_registry;

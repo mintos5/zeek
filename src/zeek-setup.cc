@@ -27,7 +27,6 @@
 #include "zeek/Debug.h"
 #include "zeek/Desc.h"
 #include "zeek/Event.h"
-#include "zeek/EventGroupRegistry.h"
 #include "zeek/EventRegistry.h"
 #include "zeek/EventTrace.h"
 #include "zeek/File.h"
@@ -194,7 +193,6 @@ zeek::detail::trigger::Manager* zeek::detail::trigger_mgr = nullptr;
 std::vector<std::string> zeek::detail::zeek_script_prefixes;
 zeek::detail::Stmt* zeek::detail::stmts = nullptr;
 zeek::EventRegistry* zeek::event_registry = nullptr;
-zeek::detail::EventGroupRegistry* zeek::detail::event_group_registry = nullptr;
 std::shared_ptr<zeek::detail::ProfileLogger> zeek::detail::profiling_logger;
 std::shared_ptr<zeek::detail::ProfileLogger> zeek::detail::segment_logger;
 std::shared_ptr<zeek::detail::SampleLogger> zeek::detail::sample_logger;
@@ -427,7 +425,6 @@ static void terminate_zeek()
 	delete file_mgr;
 	// broker_mgr, timer_mgr, supervisor, and dns_mgr are deleted via iosource_mgr
 	delete iosource_mgr;
-	delete event_group_registry;
 	delete event_registry;
 	delete log_mgr;
 	delete reporter;
@@ -694,7 +691,6 @@ SetupResult setup(int argc, char** argv, Options* zopts)
 	dns_mgr->SetDir(".state");
 
 	iosource_mgr = new iosource::Manager();
-	event_group_registry = new EventGroupRegistry();
 	event_registry = new EventRegistry();
 	packet_mgr = new packet_analysis::Manager();
 	analyzer_mgr = new analyzer::Manager();

@@ -6,7 +6,6 @@
 
 #include <memory>
 
-#include "zeek/EventGroupRegistry.h"
 #include "zeek/EventRegistry.h"
 #include "zeek/Expr.h"
 #include "zeek/Func.h"
@@ -869,7 +868,7 @@ void end_func(StmtPtr body, bool free_of_conditionals)
 		auto ce = static_cast<ConstExpr*>(group_attr->GetExpr().get());
 		std::string group_name = ce->Value()->AsStringVal()->CheckString();
 		// std::fprintf(stderr, "Attaching group %s\n", group_name.c_str());
-		auto& group = zeek::detail::event_group_registry->Register(group_name);
+		auto& group = event_registry->RegisterGroup(group_name);
 		group.AddBody(ingredients->body);
 		}
 
