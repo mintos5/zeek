@@ -5496,6 +5496,17 @@ export {
 	const flowbuffer_contract_threshold = 2 * 1024 * 1024 &redef;
 }
 
+module Pcap;
+export {
+
+	## The state of the compilation for a pcap filter.
+	type filter_state: enum {
+		ok,     # no issues encountered
+		fatal,  # fatal issue, something that would prevent zeek from continuing
+		warning # non-fatal issue that should just be logged
+	};
+}
+
 module GLOBAL;
 
 ## Seed for hashes computed internally for probabilistic data structures. Using
