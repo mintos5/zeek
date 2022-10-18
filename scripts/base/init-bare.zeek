@@ -484,6 +484,7 @@ type connection: record {
 
 	## The inner VLAN, if applicable for this connection.
 	inner_vlan: int &optional;
+	ttl: count &optional;
 };
 
 ## Arguments given to Zeek from the command line. In order to use this, Zeek

@@ -148,6 +148,7 @@ export {
 		## *uid* values for any encapsulating parent connections
 		## used over the lifetime of this inner connection.
 		tunnel_parents: set[string] &log &optional;
+		first_ttl: count				&log &optional;
 	};
 
 	## Event that can be handled to access the :zeek:type:`Conn::Info`
@@ -245,6 +246,10 @@ function set_conn(c: connection, eoc: bool)
 		}
 
 	c$conn$id=c$id;
+	if ( c?$ttl )
+		{
+			c$conn$first_ttl=c$ttl;
+		}
 	if ( c?$tunnel && |c$tunnel| > 0 )
 		{
 		if ( ! c$conn?$tunnel_parents )

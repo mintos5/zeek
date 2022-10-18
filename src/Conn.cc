@@ -57,6 +57,11 @@ Connection::Connection(const detail::ConnKey& k, double t, const ConnTuple* id, 
 	vlan = pkt->vlan;
 	inner_vlan = pkt->inner_vlan;
 
+	if (pkt->ip_hdr)
+		ttl = pkt->ip_hdr->TTL();
+	else
+		ttl = NULL;
+
 	weird = 0;
 
 	suppress_event = 0;
@@ -270,6 +275,8 @@ const RecordValPtr& Connection::GetVal()
 
 		if ( inner_vlan != 0 )
 			conn_val->Assign(10, inner_vlan);
+		if ( ttl != 0 )
+			conn_val->Assign(11, ttl);
 		}
 
 	if ( adapter )
